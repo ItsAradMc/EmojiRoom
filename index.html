@@ -1,0 +1,4823 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EmojiRoom 💬</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#0d0d12;
+    color:white;
+    min-height:100vh;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+}
+
+input{
+    width:100%;
+    background:#30303b;
+    color:white;
+    border:none;
+    outline:none;
+    padding:14px;
+    border-radius:11px;
+    margin-bottom:10px;
+    font-size:15px;
+}
+
+/* ================= LOGIN ================= */
+
+.login{
+    position:fixed;
+    inset:0;
+    background:#0d0d12;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+.login-box{
+    width:90%;
+    max-width:400px;
+    background:#1b1b24;
+    padding:30px;
+    border-radius:22px;
+    box-shadow:0 15px 50px #0008;
+}
+
+.login-box h1{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.login-box p{
+    text-align:center;
+    color:#aaa;
+    margin-bottom:25px;
+}
+
+.main-btn{
+    width:100%;
+    padding:14px;
+    border-radius:11px;
+    background:#6c52ff;
+    color:white;
+    font-size:16px;
+    margin-top:5px;
+}
+
+.main-btn:hover{
+    background:#806aff;
+}
+
+.remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#aaa;
+    font-size:14px;
+    margin:5px 0 10px;
+}
+
+.remember input{
+    width:auto;
+    margin:0;
+}
+
+.switch{
+    text-align:center;
+    margin-top:18px;
+    color:#aaa;
+    cursor:pointer;
+}
+
+.switch:hover{
+    color:white;
+}
+
+/* ================= APP ================= */
+
+.app{
+    display:none;
+    min-height:100vh;
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+}
+
+header{
+    height:70px;
+    background:#1b1b24;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    border-bottom:1px solid #30303b;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.user{
+    color:#aaa;
+    font-size:14px;
+}
+
+/* ================= LAYOUT ================= */
+
+.content{
+    display:flex;
+    min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+    width:220px;
+    flex-shrink:0;
+    background:#17171f;
+    border-left:1px solid #30303b;
+    padding:15px;
+}
+
+.nav-btn{
+    width:100%;
+    background:transparent;
+    color:#bbb;
+    padding:13px;
+    border-radius:10px;
+    text-align:right;
+    margin-bottom:7px;
+    font-size:15px;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+    background:#30303b;
+    color:white;
+}
+
+.page{
+    flex:1;
+    min-width:0;
+    padding:25px;
+}
+
+.page-section{
+    display:none;
+}
+
+.page-section.active{
+    display:block;
+}
+
+.title{
+    font-size:25px;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#999;
+    margin-bottom:20px;
+}
+
+/* ================= CHAT ================= */
+
+.chat-box{
+    width:100%;
+    height:calc(100vh - 180px);
+    min-height:400px;
+    max-height:850px;
+    background:#17171f;
+    border-radius:16px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.messages{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:15px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    scroll-behavior:smooth;
+}
+
+.message{
+    position:relative;
+    max-width:min(75%,650px);
+    background:#292934;
+    padding:7px 11px;
+    border-radius:14px;
+    align-self:flex-start;
+    word-break:break-word;
+    white-space:pre-wrap;
+}
+
+.message.me{
+    background:#6046e8;
+    align-self:flex-end;
+}
+
+.message-name{
+    font-size:10px;
+    color:#bdbdbd;
+    margin:0 0 2px 0;
+    padding:0;
+    line-height:1;
+    height:auto;
+}
+
+.message-rank{
+    font-size:9px;
+    color:#aaa;
+    margin-right:4px;
+}
+
+.message-text{
+    font-size:15px;
+    line-height:1.45;
+}
+
+.message-time{
+    color:#999;
+    font-size:9px;
+    margin-top:4px;
+}
+
+.reply-preview{
+    background:#ffffff18;
+    border-right:3px solid #aaa;
+    padding:5px 8px;
+    margin-bottom:6px;
+    border-radius:7px;
+    font-size:11px;
+    color:#ccc;
+}
+
+.reply-name{
+    font-weight:bold;
+    margin-bottom:2px;
+}
+
+.pinned-mark{
+    font-size:11px;
+    margin-right:4px;
+}
+
+.edited-mark{
+    color:#bbb;
+    font-size:9px;
+}
+
+.message-menu{
+    position:absolute;
+    top:100%;
+    right:0;
+    background:#20202a;
+    border:1px solid #3b3b48;
+    border-radius:10px;
+    padding:5px;
+    display:none;
+    min-width:135px;
+    z-index:20;
+    box-shadow:0 10px 30px #0008;
+}
+
+.message-menu button{
+    display:block;
+    width:100%;
+    text-align:right;
+    background:transparent;
+    color:white;
+    padding:8px;
+    border-radius:7px;
+}
+
+.message-menu button:hover{
+    background:#30303b;
+}
+
+.message:hover .message-menu{
+    display:block;
+}
+
+/* ================= TYPING ================= */
+
+.typing-status{
+    min-height:24px;
+    padding:4px 14px;
+    color:#999;
+    font-size:11px;
+}
+
+/* ================= REPLY ================= */
+
+.reply-box{
+    display:none;
+    background:#252530;
+    padding:8px 12px;
+    border-top:1px solid #353542;
+    font-size:12px;
+    color:#ccc;
+}
+
+.reply-box.active{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.cancel-reply{
+    background:transparent;
+    color:#aaa;
+    font-size:18px;
+}
+
+/* ================= CHAT INPUT ================= */
+
+.chat-input{
+    display:flex;
+    gap:8px;
+    padding:10px;
+    background:#20202a;
+    flex-shrink:0;
+}
+
+.chat-input input{
+    margin:0;
+    min-width:0;
+}
+
+.send{
+    background:#6c52ff;
+    color:white;
+    border-radius:10px;
+    padding:0 18px;
+    flex-shrink:0;
+}
+
+.voice-btn{
+    background:#343440;
+    color:white;
+    border-radius:10px;
+    padding:0 15px;
+    font-size:18px;
+    flex-shrink:0;
+}
+
+.voice-btn.recording{
+    background:#a43d3d;
+}
+
+/* ================= VOICE ================= */
+
+.voice-message{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:180px;
+}
+
+.voice-message audio{
+    max-width:220px;
+    height:35px;
+}
+
+/* ================= LOCATION ================= */
+
+.location-message{
+    background:#ffffff12;
+    border-radius:9px;
+    padding:9px;
+    margin-top:3px;
+}
+
+.location-message a{
+    color:#bcaeff;
+    text-decoration:none;
+}
+
+/* ================= MEMBERS ================= */
+
+.member{
+    background:#20202a;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.member-info{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.member-id{
+    color:#888;
+    font-size:12px;
+}
+
+.rank-badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:7px;
+    font-size:11px;
+    background:#30303b;
+}
+
+.rank-king{
+    background:#6c52ff;
+}
+
+.rank-admin{
+    background:#444;
+}
+
+.online{
+    color:#50e878;
+    margin-top:5px;
+    font-size:12px;
+}
+
+/* ================= PROFILE ================= */
+
+.profile{
+    max-width:500px;
+    background:#20202a;
+    padding:25px;
+    border-radius:18px;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    background:#6c52ff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:35px;
+    margin:0 auto 15px;
+}
+
+.profile h2{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.profile-rank{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info{
+    background:#30303b;
+    padding:13px;
+    border-radius:10px;
+    margin-bottom:8px;
+}
+
+.admin-badge{
+    display:none;
+    background:#6c52ff;
+    padding:8px 12px;
+    border-radius:10px;
+    text-align:center;
+    margin-bottom:12px;
+}
+
+/* ================= ADMIN ================= */
+
+.admin-user{
+    background:#20202a;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.admin-user-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.admin-controls{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.small-btn{
+    background:#30303b;
+    color:white;
+    padding:8px 10px;
+    border-radius:8px;
+}
+
+.small-btn:hover{
+    background:#454553;
+}
+
+.danger{
+    background:#713737;
+}
+
+.permission-box{
+    display:none;
+    background:#17171f;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+.permission-box.active{
+    display:block;
+}
+
+.permission{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-bottom:8px;
+    color:#ccc;
+    font-size:13px;
+}
+
+.permission input{
+    width:auto;
+    margin:0;
+}
+
+/* ================= LOGS ================= */
+
+.log-item{
+    background:#20202a;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:8px;
+    color:#ccc;
+    font-size:13px;
+}
+
+.log-time{
+    color:#777;
+    font-size:10px;
+    margin-top:5px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:180px;
+    }
+
+    .page{
+        padding:18px;
+    }
+
+    .chat-box{
+        height:calc(100vh - 160px);
+    }
+
+    .message{
+        max-width:82%;
+    }
+
+}
+
+@media(max-width:700px){
+
+    header{
+        height:60px;
+        padding:0 12px;
+    }
+
+    .logo{
+        font-size:18px;
+    }
+
+    .user{
+        font-size:12px;
+    }
+
+    .content{
+        min-height:calc(100vh - 60px);
+    }
+
+    .sidebar{
+        width:62px;
+        padding:7px;
+    }
+
+    .nav-btn{
+        text-align:center;
+        font-size:0;
+        padding:12px 5px;
+    }
+
+    .nav-btn span{
+        font-size:22px;
+    }
+
+    .page{
+        padding:10px;
+    }
+
+    .title{
+        font-size:21px;
+    }
+
+    .subtitle{
+        font-size:13px;
+        margin-bottom:12px;
+    }
+
+    .chat-box{
+        height:calc(100vh - 125px);
+        min-height:0;
+        max-height:none;
+        border-radius:12px;
+    }
+
+    .messages{
+        padding:10px 8px;
+        gap:8px;
+    }
+
+    .message{
+        max-width:88%;
+        padding:7px 9px;
+        border-radius:12px;
+    }
+
+    .message-name{
+        font-size:9px;
+    }
+
+    .message-text{
+        font-size:14px;
+    }
+
+    .chat-input{
+        padding:8px;
+        gap:5px;
+    }
+
+    .chat-input input{
+        padding:12px 9px;
+        font-size:14px;
+    }
+
+    .send{
+        padding:0 12px;
+    }
+
+    .voice-btn{
+        padding:0 11px;
+    }
+
+    .message-menu{
+    position:fixed;
+    right:10px;
+    bottom:70px;
+    min-width:150px;
+}
+
+    .profile{
+        padding:18px;
+    }
+
+}
+
+@media(max-width:400px){
+
+    .sidebar{
+        width:56px;
+    }
+
+    .page{
+        padding:7px;
+    }
+
+    .message{
+        max-width:92%;
+    }
+
+    .send{
+        padding:0 10px;
+    }
+
+    .voice-btn{
+        padding:0 9px;
+    }
+
+}
+
+
+/* ================= LARGE SCREEN ================= */
+
+@media(min-width:1500px){
+
+    .app{
+        max-width:1400px;
+    }
+
+    .chat-box{
+        max-height:850px;
+    }
+
+}
+
+
+/* ================= TRUTH OR DARE ================= */
+
+.game-card{
+    background:#17171f;
+    border-radius:18px;
+    padding:22px;
+    max-width:850px;
+}
+
+.game-status{
+    background:#20202a;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:16px;
+    color:#ccc;
+}
+
+.game-turn{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.game-question{
+    min-height:150px;
+    background:#20202a;
+    border:1px solid #343442;
+    border-radius:16px;
+    padding:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:21px;
+    line-height:1.8;
+    margin-bottom:16px;
+}
+
+.game-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.game-btn{
+    padding:14px;
+    border-radius:11px;
+    background:#30303b;
+    color:white;
+    font-size:16px;
+}
+
+.game-btn:hover{
+    background:#454553;
+}
+
+.game-btn.truth{
+    background:#3559a8;
+}
+
+.game-btn.dare{
+    background:#8a3e65;
+}
+
+.game-btn.next{
+    background:#6c52ff;
+    width:100%;
+}
+
+.game-btn.reset{
+    background:#343440;
+    width:100%;
+    margin-top:8px;
+}
+
+.game-select{
+    width:100%;
+    background:#30303b;
+    color:white;
+    border:none;
+    outline:none;
+    padding:14px;
+    border-radius:11px;
+    font-size:15px;
+    margin-bottom:12px;
+}
+
+.game-history{
+    margin-top:18px;
+}
+
+.game-history h3{
+    margin-bottom:10px;
+}
+
+.game-history-item{
+    background:#20202a;
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:7px;
+    color:#ccc;
+    font-size:13px;
+}
+
+@media(max-width:700px){
+    .game-card{
+        padding:14px;
+    }
+
+    .game-question{
+        min-height:130px;
+        padding:18px;
+        font-size:17px;
+    }
+
+    .game-actions{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+
+<!-- =====================================================
+LOGIN
+===================================================== -->
+
+<div class="login" id="login">
+
+    <div class="login-box">
+
+        <h1>💬 EmojiRoom</h1>
+
+        <p id="loginText">
+            وارد حساب خود شوید
+        </p>
+
+        <input
+            id="name"
+            type="text"
+            placeholder="اسم شما"
+            style="display:none"
+        >
+
+        <input
+            id="userID"
+            type="text"
+            placeholder="ID شما مثلا ItsAradMc"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="رمز عبور"
+        >
+
+        <label class="remember">
+
+            <input
+                id="remember"
+                type="checkbox"
+            >
+
+            مرا به خاطر بسپار
+
+        </label>
+
+        <button
+            class="main-btn"
+            onclick="loginUser()"
+        >
+            ورود
+        </button>
+
+        <div
+            class="switch"
+            id="switchText"
+            onclick="changeMode()"
+        >
+            حساب ندارید؟ ثبت‌نام کنید
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+APP
+===================================================== -->
+
+<div class="app" id="app">
+
+<header>
+
+    <div class="logo">
+        💬 EmojiRoom
+    </div>
+
+    <div
+        class="user"
+        id="headerUser"
+    ></div>
+
+</header>
+
+
+<div class="content">
+
+
+<!-- =====================================================
+SIDEBAR
+===================================================== -->
+
+<nav class="sidebar">
+
+    <button
+        class="nav-btn active"
+        onclick="showPage('chat',this)"
+    >
+        <span>💬</span> چت
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('members',this)"
+    >
+        <span>👥</span> اعضا
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('profile',this)"
+    >
+        <span>👤</span> پروفایل
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('game',this)"
+    >
+        <span>🎲</span> جرئت حقیقت
+    </button>
+
+    <button
+        class="nav-btn"
+        id="adminNav"
+        onclick="showPage('admin',this)"
+        style="display:none"
+    >
+        <span>👑</span> مدیریت
+    </button>
+
+</nav>
+
+
+<main class="page">
+
+
+<!-- =====================================================
+CHAT
+===================================================== -->
+
+<section
+    id="chat"
+    class="page-section active"
+>
+
+    <div class="title">
+        💬 چت
+    </div>
+
+    <div class="subtitle">
+        با دوستانت گفتگو کن
+    </div>
+
+
+    <div class="chat-box">
+
+        <div
+            class="messages"
+            id="messages"
+        ></div>
+
+
+        <div
+            class="typing-status"
+            id="typingStatus"
+        ></div>
+
+
+        <div
+            class="reply-box"
+            id="replyBox"
+        >
+
+            <div id="replyText">
+                در حال پاسخ به پیام
+            </div>
+
+            <button
+                class="cancel-reply"
+                onclick="cancelReply()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="chat-input">
+
+            <input
+                id="message"
+                placeholder="پیامت رو بنویس..."
+                oninput="handleTyping()"
+                onkeydown="
+                    if(event.key==='Enter'){
+                        event.preventDefault();
+                        sendMessage();
+                    }
+                "
+            >
+
+            <button
+                class="voice-btn"
+                id="voiceBtn"
+                onclick="toggleRecording()"
+                title="ضبط ویس"
+            >
+                🎙️
+            </button>
+
+            <button
+                class="send"
+                onclick="sendMessage()"
+            >
+                ارسال
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+MEMBERS
+===================================================== -->
+
+<section
+    id="members"
+    class="page-section"
+>
+
+    <div class="title">
+        👥 اعضا
+    </div>
+
+    <div class="subtitle">
+        اعضای سایت
+    </div>
+
+    <div id="membersList"></div>
+
+</section>
+
+
+
+<!-- =====================================================
+TRUTH OR DARE
+===================================================== -->
+
+<section
+    id="game"
+    class="page-section"
+>
+
+    <div class="title">
+        🎲 جرئت یا حقیقت
+    </div>
+
+    <div class="subtitle">
+        با اعضای EmojiRoom بازی کن
+    </div>
+
+    <div class="game-card">
+
+        <div class="game-status">
+            <div class="game-turn" id="gameTurn">
+                نوبت بازیکن را انتخاب کن
+            </div>
+            <div id="gameHint">
+                اول بازیکن را انتخاب کن، بعد «حقیقت» یا «جرئت» را بزن.
+            </div>
+        </div>
+
+        <select
+            id="gamePlayer"
+            class="game-select"
+            onchange="setGamePlayer()"
+        ></select>
+
+        <div
+            id="gameQuestion"
+            class="game-question"
+        >
+            🎲 آماده‌ای؟ یکی از گزینه‌ها را انتخاب کن.
+        </div>
+
+        <div class="game-actions">
+
+            <button
+                class="game-btn truth"
+                onclick="playTruth()"
+            >
+                🧠 حقیقت
+            </button>
+
+            <button
+                class="game-btn dare"
+                onclick="playDare()"
+            >
+                🔥 جرئت
+            </button>
+
+        </div>
+
+        <button
+            class="game-btn next"
+            onclick="nextGameTurn()"
+        >
+            ➡️ نوبت بعدی
+        </button>
+
+        <button
+            class="game-btn reset"
+            onclick="resetGame()"
+        >
+            🔄 شروع دوباره بازی
+        </button>
+
+        <div class="game-history">
+
+            <h3>📜 نوبت‌های اخیر</h3>
+
+            <div id="gameHistory"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+PROFILE
+===================================================== -->
+
+<section
+    id="profile"
+    class="page-section"
+>
+
+    <div class="title">
+        👤 پروفایل
+    </div>
+
+    <br>
+
+    <div class="profile">
+
+        <div class="avatar">
+            👤
+        </div>
+
+        <h2 id="profileName">
+            کاربر
+        </h2>
+
+        <div
+            id="profileRank"
+            class="profile-rank"
+        ></div>
+
+        <div
+            id="adminBadge"
+            class="admin-badge"
+        >
+            👑 مدیریت سایت
+        </div>
+
+        <div class="info">
+
+            🪪 ID:
+
+            <span id="profileID">
+                -
+            </span>
+
+        </div>
+
+        <div class="info">
+            🟢 وضعیت: آنلاین
+        </div>
+
+        <button
+            class="main-btn"
+            onclick="shareLocation()"
+        >
+            📍 ارسال موقعیت مکانی
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+ADMIN
+===================================================== -->
+
+<section
+    id="admin"
+    class="page-section"
+>
+
+    <div class="title">
+        👑 مدیریت سایت
+    </div>
+
+    <div class="subtitle">
+        این قسمت فقط برای King است.
+    </div>
+
+
+    <h3 style="margin-bottom:12px;">
+        👥 مدیریت کاربران
+    </h3>
+
+    <div id="adminUsers"></div>
+
+
+    <h3 style="margin:25px 0 12px;">
+        🗑️ پیام‌های حذف‌شده
+    </h3>
+
+    <div id="deletedMessages"></div>
+
+
+    <h3 style="margin:25px 0 12px;">
+        ✏️ تاریخچه ویرایش پیام‌ها
+    </h3>
+
+    <div id="editedMessages"></div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<script>
+
+
+const SUPABASE_URL = "https://pjydsggfmfqcneltfxeu.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_eVjL4IzvAtOS2IUgeA8VGQ_Kay3rFhY";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+console.log("Supabase connected:", supabaseClient);
+
+supabaseClient
+    .channel("messages-room")
+    .on(
+        "postgres_changes",
+        {
+            event: "*",
+            schema: "public",
+            table: "messages"
+        },
+        function(payload){
+
+            console.log(
+                "Realtime message change:",
+                payload
+            );
+
+            loadMessages();
+
+        }
+    )
+    .subscribe();
+
+/* =====================================================
+SETTINGS
+===================================================== */
+
+const KING_ID = "itsaradmc";
+
+let registerMode = false;
+
+let currentUser = null;
+
+let replyTo = null;
+
+let mediaRecorder = null;
+
+let audioChunks = [];
+
+let isRecording = false;
+
+let typingTimer = null;
+
+
+/* =====================================================
+NORMALIZE ID
+===================================================== */
+
+function normalizeID(value){
+
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/^@/,"");
+
+}
+
+
+/* =====================================================
+KING
+===================================================== */
+
+function createDefaultKing(){
+
+    const key =
+        "emojiRoomAccount_" +
+        KING_ID;
+
+
+    const saved =
+        localStorage.getItem(key);
+
+
+    if(saved){
+
+        try{
+
+            const account =
+                JSON.parse(saved);
+
+
+            account.role =
+                "king";
+
+
+            account.id =
+                KING_ID;
+
+
+            account.permissions = {
+
+                reply:true,
+                edit:true,
+                delete:true,
+                pin:true,
+                manageUsers:true
+
+            };
+
+
+            saveUser(account);
+
+        }
+        catch(error){}
+
+        return;
+
+    }
+
+
+    const king = {
+
+        name:"ItsAradMc",
+
+        id:KING_ID,
+
+        password:"",
+
+        role:"king",
+
+        permissions:{
+
+            reply:true,
+            edit:true,
+            delete:true,
+            pin:true,
+            manageUsers:true
+
+        }
+
+    };
+
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(king)
+    );
+
+}
+
+
+/* =====================================================
+GET USERS
+===================================================== */
+
+function getUsers(){
+
+    const users = [];
+
+
+    for(
+        let i=0;
+        i<localStorage.length;
+        i++
+    ){
+
+        const key =
+            localStorage.key(i);
+
+
+        if(
+            key &&
+            key.startsWith(
+                "emojiRoomAccount_"
+            )
+        ){
+
+            try{
+
+                const user =
+                    JSON.parse(
+                        localStorage.getItem(key)
+                    );
+
+
+                users.push(user);
+
+            }
+            catch(error){}
+
+        }
+
+    }
+
+
+    return users;
+
+}
+
+
+/* =====================================================
+SAVE USER
+===================================================== */
+
+function saveUser(user){
+
+    const idKey =
+        normalizeID(user.id);
+
+
+    localStorage.setItem(
+        "emojiRoomAccount_" + idKey,
+        JSON.stringify(user)
+    );
+
+}
+
+
+/* =====================================================
+GET CURRENT USER FRESH
+===================================================== */
+
+function refreshCurrentUser(){
+
+    if(!currentUser)
+        return;
+
+
+    const key =
+        "emojiRoomAccount_" +
+        normalizeID(currentUser.id);
+
+
+    const saved =
+        localStorage.getItem(key);
+
+
+    if(!saved)
+        return;
+
+
+    try{
+
+        currentUser =
+            JSON.parse(saved);
+
+    }
+    catch(error){}
+
+}
+
+
+/* =====================================================
+LOAD
+===================================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        createDefaultKing();
+
+        loadSavedGame();
+
+
+        const saved =
+            localStorage.getItem(
+                "emojiRoomUser"
+            );
+
+
+        if(saved){
+
+            try{
+
+                const data =
+                    JSON.parse(saved);
+
+
+                document.getElementById(
+                    "userID"
+                ).value =
+                    data.id || "";
+
+
+                document.getElementById(
+                    "remember"
+                ).checked =
+                    true;
+
+            }
+            catch(error){
+
+                localStorage.removeItem(
+                    "emojiRoomUser"
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+LOGIN MODE
+===================================================== */
+
+function changeMode(){
+
+    registerMode =
+        !registerMode;
+
+
+    const text =
+        document.getElementById(
+            "loginText"
+        );
+
+
+    const button =
+        document.querySelector(
+            ".main-btn"
+        );
+
+
+    const switchText =
+        document.getElementById(
+            "switchText"
+        );
+
+
+    const nameInput =
+        document.getElementById(
+            "name"
+        );
+
+
+    if(registerMode){
+
+        text.innerText =
+            "حساب خود را بسازید";
+
+
+        button.innerText =
+            "ثبت‌نام";
+
+
+        switchText.innerText =
+            "حساب دارید؟ وارد شوید";
+
+
+        nameInput.style.display =
+            "block";
+
+    }
+    else{
+
+        text.innerText =
+            "وارد حساب خود شوید";
+
+
+        button.innerText =
+            "ورود";
+
+
+        switchText.innerText =
+            "حساب ندارید؟ ثبت‌نام کنید";
+
+
+        nameInput.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+LOGIN / REGISTER
+===================================================== */
+async function loginUser(){
+
+    const name =
+        document.getElementById(
+            "name"
+        ).value.trim();
+
+
+    const rawID =
+        document.getElementById(
+            "userID"
+        ).value;
+
+
+    const id =
+        normalizeID(rawID);
+
+
+    const password =
+        document.getElementById(
+            "password"
+        ).value;
+
+
+    const remember =
+        document.getElementById(
+            "remember"
+        ).checked;
+
+
+    /* ================= REGISTER ================= */
+
+    if(registerMode){
+
+    if(!name){
+        alert("اسم خود را وارد کنید");
+        return;
+    }
+
+    if(!id){
+        alert("ID خود را وارد کنید");
+        return;
+    }
+
+    if(id === KING_ID){
+        alert("این ID مخصوص King است.");
+        return;
+    }
+
+    if(!password){
+        alert("رمز عبور خود را وارد کنید");
+        return;
+    }
+
+    if(password.length < 4){
+        alert("رمز عبور باید حداقل ۴ کاراکتر باشد.");
+        return;
+    }
+
+    /* بررسی وجود ID در Supabase */
+
+    const existingUser =
+        await getUserFromSupabase(id);
+
+    if(existingUser){
+        alert("این ID قبلاً استفاده شده است.");
+        return;
+    }
+
+    /* ساخت حساب در Supabase */
+
+    const { data, error } =
+        await supabaseClient
+            .from("users")
+            .insert({
+                user_id: id,
+                name: name,
+                password: password,
+                role: "normal"
+            })
+            .select()
+            .single();
+
+    if(error){
+
+        console.error(
+            "Supabase register error:",
+            error
+        );
+
+        alert(
+            "ثبت‌نام انجام نشد. Console را بررسی کنید."
+        );
+
+        return;
+    }
+
+    /* ذخیره محلی برای سازگاری با سایت فعلی */
+
+    const account = {
+        name: data.name,
+        id: data.user_id,
+        password: data.password,
+        role: data.role,
+        permissions:{
+            reply:true,
+            edit:true,
+            delete:true,
+            pin:true,
+            manageUsers:false
+        }
+    };
+
+    saveUser(account);
+
+    alert("حساب شما با موفقیت ساخته شد ✅");
+
+    registerMode = false;
+
+    document.getElementById("loginText").innerText =
+        "وارد حساب خود شوید";
+
+    document.querySelector(".main-btn").innerText =
+        "ورود";
+
+    document.getElementById("switchText").innerText =
+        "حساب ندارید؟ ثبت‌نام کنید";
+
+    document.getElementById("name").style.display =
+        "none";
+
+    document.getElementById("userID").value =
+        id;
+
+    document.getElementById("password").value =
+        "";
+
+    return;
+}
+
+
+    
+
+
+    /* ================= LOGIN ================= */
+
+    if(!id){
+
+        alert(
+            "ID خود را وارد کنید"
+        );
+
+        return;
+
+    }
+
+
+    if(!password){
+
+        alert(
+            "رمز عبور خود را وارد کنید"
+        );
+
+        return;
+
+    }
+
+
+   const account =
+    await getUserFromSupabase(id);
+
+
+if(!account){
+
+    alert(
+        "حسابی با این ID پیدا نشد."
+    );
+
+    return;
+
+}
+
+
+if(
+    account.password !==
+    password
+){
+
+    alert(
+        "رمز عبور اشتباه است ❌"
+    );
+
+    return;
+
+}
+
+
+    /* =================================================
+       مهم:
+       اگر ID همان ItsAradMc باشد،
+       همیشه King است.
+    ================================================= */
+
+    if(
+    normalizeID(account.user_id) ===
+    KING_ID
+){
+
+        account.role =
+            "king";
+
+        account.permissions = {
+
+            reply:true,
+            edit:true,
+            delete:true,
+            pin:true,
+            manageUsers:true
+
+        };
+
+        saveUser(account);
+
+    }
+
+    account.id =
+    account.user_id;
+
+    currentUser =
+        account;
+
+
+    if(remember){
+
+        localStorage.setItem(
+            "emojiRoomUser",
+            JSON.stringify({
+
+                id:account.id
+
+            })
+        );
+
+    }
+    else{
+
+        localStorage.removeItem(
+            "emojiRoomUser"
+        );
+
+    }
+
+
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "block";
+
+
+    updateUI();
+
+}
+
+async function getUserFromSupabase(id){
+
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("user_id", id)
+        .maybeSingle();
+
+    if(error){
+        console.error("Supabase users error:", error);
+        return null;
+    }
+
+    return data;
+}
+
+
+/* =====================================================
+UPDATE UI
+===================================================== */
+
+function updateUI(){
+
+    refreshCurrentUser();
+
+
+    document.getElementById(
+        "headerUser"
+    ).innerText =
+        "👤 " +
+        currentUser.name;
+
+
+    document.getElementById(
+        "profileName"
+    ).innerText =
+        currentUser.name;
+
+
+    document.getElementById(
+        "profileID"
+    ).innerText =
+        currentUser.id;
+
+
+    document.getElementById(
+        "profileRank"
+    ).innerHTML =
+        getRankBadge(
+            currentUser.role
+        );
+
+
+    const adminBadge =
+        document.getElementById(
+            "adminBadge"
+        );
+
+
+    if(
+        currentUser.role === "king" ||
+        currentUser.role === "admin"
+    ){
+
+        adminBadge.style.display =
+            "block";
+
+    }
+    else{
+
+        adminBadge.style.display =
+            "none";
+
+    }
+
+
+    const adminNav =
+        document.getElementById(
+            "adminNav"
+        );
+
+
+    if(
+        currentUser.role === "king"
+    ){
+
+        adminNav.style.display =
+            "block";
+
+    }
+    else{
+
+        adminNav.style.display =
+            "none";
+
+    }
+
+
+    loadMembers();
+
+    loadMessages();
+
+}
+
+
+/* =====================================================
+RANK
+===================================================== */
+
+function getRankBadge(role){
+
+    if(role === "king"){
+
+        return `
+            <span class="rank-badge rank-king">
+                👑 King
+            </span>
+        `;
+
+    }
+
+
+    if(role === "admin"){
+
+        return `
+            <span class="rank-badge rank-admin">
+                🛡️ ادمین
+            </span>
+        `;
+
+    }
+
+
+    return `
+        <span class="rank-badge">
+            👤 عادی
+        </span>
+    `;
+
+}
+
+
+/* =====================================================
+PAGES
+===================================================== */
+
+function showPage(page,button){
+
+    refreshCurrentUser();
+
+
+    if(
+        page === "admin" &&
+        currentUser.role !== "king"
+    ){
+
+        alert(
+            "این قسمت فقط برای King است."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".page-section"
+        )
+        .forEach(
+            function(section){
+
+                section.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(page)
+        .classList.add(
+            "active"
+        );
+
+
+    document
+        .querySelectorAll(
+            ".nav-btn"
+        )
+        .forEach(
+            function(btn){
+
+                btn.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    button.classList.add(
+        "active"
+    );
+
+
+    if(page === "admin"){
+
+        loadAdminPanel();
+
+    }
+
+    if(page === "game"){
+
+        loadSavedGame();
+
+    }
+
+}
+
+
+/* =====================================================
+MEMBERS
+===================================================== */
+
+function loadMembers(){
+
+    const box =
+        document.getElementById(
+            "membersList"
+        );
+
+
+    if(!box)
+        return;
+
+
+    const users =
+        getUsers();
+
+
+    box.innerHTML = "";
+
+
+    users.forEach(
+        function(user){
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "member";
+
+
+            div.innerHTML = `
+
+                <div class="member-info">
+
+                    <b>
+                        ${escapeHTML(
+                            user.name
+                        )}
+                    </b>
+
+                    <span class="member-id">
+                        ${escapeHTML(
+                            user.id
+                        )}
+                    </span>
+
+                    <span class="online">
+                        ● آنلاین
+                    </span>
+
+                </div>
+
+                <div>
+                    ${getRankBadge(
+                        user.role
+                    )}
+                </div>
+
+            `;
+
+
+            box.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+/* =====================================================
+MESSAGES STORAGE
+===================================================== */
+
+function getChatMessages(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "emojiRoomMessages"
+            )
+        ) || [];
+
+    }
+    catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+function saveChatMessages(messages){
+
+    localStorage.setItem(
+        "emojiRoomMessages",
+        JSON.stringify(messages)
+    );
+
+}
+
+
+/* =====================================================
+LOAD MESSAGES FROM SUPABASE
+===================================================== */
+
+async function loadMessages(){
+
+    const box =
+        document.getElementById(
+            "messages"
+        );
+
+    if(!box)
+        return;
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("messages")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if(error){
+
+        console.error(
+            "Supabase load messages error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    const messages =
+        data || [];
+
+
+    box.innerHTML = "";
+
+
+    if(messages.length === 0){
+
+        const welcome =
+            document.createElement(
+                "div"
+            );
+
+
+        welcome.className =
+            "message";
+
+
+        welcome.innerHTML = `
+
+            <div class="message-name">
+                EmojiRoom
+            </div>
+
+            <div class="message-text">
+                سلام 👋 به EmojiRoom خوش اومدی!
+            </div>
+
+        `;
+
+
+        box.appendChild(
+            welcome
+        );
+
+
+        return;
+
+    }
+
+
+    messages.forEach(
+        function(msg){
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "message";
+
+
+            if(
+                normalizeID(msg.user_id) ===
+                normalizeID(currentUser.id)
+            ){
+
+                div.classList.add(
+                    "me"
+                );
+
+            }
+
+
+            let replyHTML = "";
+
+
+            if(msg.reply_to){
+
+                replyHTML = `
+
+                    <div class="reply-preview">
+
+                        ↩️ پاسخ به پیام
+
+                    </div>
+
+                `;
+
+            }
+
+
+            const pinnedHTML =
+    msg.is_pinned
+    ? `
+        <span class="pinned-mark">
+            📌 سنجاق شده
+        </span>
+      `
+    : "";
+
+
+            /* ================= TEXT ================= */
+
+            if(
+                !msg.type ||
+                msg.type === "text"
+            ){
+
+                contentHTML = `
+
+                    <div class="message-text">
+
+                        ${escapeHTML(
+                            msg.content || ""
+                        )}
+
+                    </div>
+
+                `;
+
+            }
+
+
+            /* ================= VOICE ================= */
+
+            else if(
+                msg.type === "voice"
+            ){
+
+                contentHTML = `
+
+                    <div class="voice-message">
+
+                        🎙️
+
+                        <audio
+                            controls
+                            src="${msg.audio || ""}"
+                        ></audio>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            /* ================= LOCATION ================= */
+
+            else if(
+                msg.type === "location"
+            ){
+
+                contentHTML = `
+
+                    <div class="location-message">
+
+                        📍 موقعیت مکانی
+
+                    </div>
+
+                `;
+
+            }
+
+
+            div.innerHTML = `
+
+                <div class="message-name">
+
+                    ${escapeHTML(
+                        msg.name || ""
+                    )}
+
+                    <span class="message-rank">
+
+                        ${getRoleShort(
+                            getUserRole(
+                                msg.user_id
+                            )
+                        )}
+
+                    </span>
+
+                    ${pinnedHTML}
+
+                </div>
+
+
+                ${replyHTML}
+
+
+                ${contentHTML}
+
+
+                <div class="message-time">
+
+                    ${
+                        msg.created_at
+                        ? new Date(
+                            msg.created_at
+                          ).toLocaleString(
+                            "fa-IR"
+                          )
+                        : ""
+                    }
+
+                </div>
+
+
+                <div class="message-menu"></div>
+
+            `;
+
+
+            const menu =
+                div.querySelector(
+                    ".message-menu"
+                );
+
+
+            const isOwner =
+                normalizeID(msg.user_id) ===
+                normalizeID(currentUser.id);
+
+
+            const canEdit =
+                isOwner ||
+                currentUser.role === "king" ||
+                (
+                    currentUser.role === "admin" &&
+                    currentUser.permissions?.edit
+                );
+
+
+            const canDelete =
+                isOwner ||
+                currentUser.role === "king" ||
+                (
+                    currentUser.role === "admin" &&
+                    currentUser.permissions?.delete
+                );
+
+
+            const canPin =
+                currentUser.role === "king" ||
+                (
+                    currentUser.role === "admin" &&
+                    currentUser.permissions?.pin
+                );
+
+
+            const canReply =
+                currentUser.role === "king" ||
+                currentUser.permissions?.reply !== false;
+
+
+            /* ================= REPLY ================= */
+
+            if(canReply){
+
+                menu.innerHTML += `
+
+                    <button
+                        onclick="replyMessage('${msg.id}')"
+                    >
+                        ↩️ ریپلای
+                    </button>
+
+                `;
+
+            }
+
+
+            /* ================= EDIT ================= */
+
+            if(
+                canEdit &&
+                (!msg.type || msg.type === "text")
+            ){
+
+                menu.innerHTML += `
+
+                    <button
+                        onclick="editMessage('${msg.id}')"
+                    >
+                        ✏️ ویرایش
+                    </button>
+
+                `;
+
+            }
+
+
+            /* ================= DELETE ================= */
+
+            if(canDelete){
+
+                menu.innerHTML += `
+
+                    <button
+                        onclick="deleteMessage('${msg.id}')"
+                    >
+                        🗑️ حذف
+                    </button>
+
+                `;
+
+            }
+
+
+            /* ================= PIN ================= */
+
+            if(canPin){
+
+                menu.innerHTML += `
+
+                    <button
+                        onclick="togglePin('${msg.id}')"
+                    >
+                        ${
+                            msg.is_pinned
+                            ? "📍 برداشتن سنجاق"
+                            : "📌 سنجاق"
+                        }
+                    </button>
+
+                `;
+
+            }
+
+
+            box.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    box.scrollTop =
+        box.scrollHeight;
+
+}
+
+
+/* =====================================================
+SEND MESSAGE TO SUPABASE
+===================================================== */
+
+async function sendMessage(){
+
+    refreshCurrentUser();
+
+
+    const input =
+        document.getElementById(
+            "message"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if(!text)
+        return;
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("messages")
+            .insert({
+
+                user_id:
+                    currentUser.id,
+
+                name:
+                    currentUser.name,
+
+                content:
+                    text,
+
+                type:
+                    "text",
+
+                reply_to:
+                    replyTo
+                        ? replyTo.id
+                        : null
+
+            })
+            .select()
+            .single();
+
+
+    if(error){
+
+        console.error(
+            "Supabase send message error:",
+            error
+        );
+
+
+        alert(
+            "پیام ارسال نشد ❌\n" +
+            error.message
+        );
+
+
+        return;
+
+    }
+
+
+    console.log(
+        "Message saved:",
+        data
+    );
+
+
+    input.value =
+        "";
+
+
+    cancelReply();
+
+
+    clearTyping();
+
+
+    await loadMessages();
+
+}
+/* =====================================================
+ROLE
+===================================================== */
+
+function getUserRole(id){
+
+    if(
+        normalizeID(id) ===
+        KING_ID
+    ){
+
+        return "king";
+
+    }
+
+
+    const saved =
+        localStorage.getItem(
+            "emojiRoomAccount_" +
+            normalizeID(id)
+        );
+
+
+    if(!saved)
+        return "normal";
+
+
+    try{
+
+        return JSON.parse(
+            saved
+        ).role || "normal";
+
+    }
+    catch(error){
+
+        return "normal";
+
+    }
+
+}
+
+
+function getRoleShort(role){
+
+    if(role === "king")
+        return "👑";
+
+    if(role === "admin")
+        return "🛡️";
+
+    return "";
+
+}
+
+
+/* =====================================================
+REPLY
+===================================================== */
+
+async function replyMessage(id){
+
+    const { data: msg, error } =
+        await supabaseClient
+            .from("messages")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if(error || !msg){
+
+        console.error(
+            "Find reply message error:",
+            error
+        );
+
+        return;
+    }
+
+    replyTo = {
+        id:
+            msg.id,
+
+        userName:
+            msg.name,
+
+        text:
+            msg.content || ""
+    };
+
+    document.getElementById(
+        "replyBox"
+    ).classList.add(
+        "active"
+    );
+
+    document.getElementById(
+        "replyText"
+    ).innerText =
+        "↩️ پاسخ به " +
+        msg.name +
+        ": " +
+        (
+            msg.content ||
+            "🎙️ ویس"
+        );
+
+    document.getElementById(
+        "message"
+    ).focus();
+
+}
+
+/* =====================================================
+EDIT
+===================================================== */
+
+async function editMessage(id){
+
+    refreshCurrentUser();
+
+    const { data: msg, error: findError } =
+        await supabaseClient
+            .from("messages")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if(findError || !msg){
+        console.error(findError);
+        return;
+    }
+
+    const allowed =
+        msg.user_id === currentUser.id ||
+        currentUser.role === "king" ||
+        (
+            currentUser.role === "admin" &&
+            currentUser.permissions?.edit
+        );
+
+    if(!allowed){
+
+        alert(
+            "اجازه ویرایش این پیام را نداری."
+        );
+
+        return;
+
+    }
+
+    const newText =
+        prompt(
+            "متن جدید پیام:",
+            msg.content || ""
+        );
+
+    if(
+        newText === null ||
+        !newText.trim()
+    )
+        return;
+
+    const cleanText =
+        newText.trim();
+
+    /* لاگ ویرایش برای King */
+    if(
+        currentUser.role === "king" &&
+        cleanText !== (msg.content || "")
+    ){
+
+        saveEditedLog({
+
+            messageId:
+                msg.id,
+
+            userId:
+                msg.user_id,
+
+            userName:
+                msg.name,
+
+            oldText:
+                msg.content || "",
+
+            newText:
+                cleanText,
+
+            time:
+                new Date().toLocaleString(
+                    "fa-IR"
+                )
+
+        });
+
+    }
+
+    const { error: updateError } =
+        await supabaseClient
+            .from("messages")
+            .update({
+
+                content:
+                    cleanText,
+
+                edited:
+                    true
+
+            })
+            .eq("id", id);
+
+    if(updateError){
+
+        console.error(
+            "Supabase edit error:",
+            updateError
+        );
+
+        alert(
+            "ویرایش پیام انجام نشد ❌\n" +
+            updateError.message
+        );
+
+        return;
+
+    }
+
+    await loadMessages();
+
+}
+
+/* =====================================================
+DELETE
+===================================================== */
+
+async function deleteMessage(id){
+
+    refreshCurrentUser();
+
+    const { data: msg, error: findError } =
+        await supabaseClient
+            .from("messages")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if(findError || !msg){
+
+        console.error(
+            "Supabase find message error:",
+            findError
+        );
+
+        return;
+    }
+
+    const allowed =
+        msg.user_id === currentUser.id ||
+        currentUser.role === "king" ||
+        (
+            currentUser.role === "admin" &&
+            currentUser.permissions?.delete
+        );
+
+    if(!allowed){
+
+        alert(
+            "اجازه حذف این پیام را نداری."
+        );
+
+        return;
+
+    }
+
+    if(
+        !confirm(
+            "این پیام حذف شود؟"
+        )
+    )
+        return;
+
+    /* لاگ حذف برای King */
+    if(
+        currentUser.role === "king"
+    ){
+
+        saveDeletedLog({
+
+            messageId:
+                msg.id,
+
+            userId:
+                msg.user_id,
+
+            userName:
+                msg.name,
+
+            text:
+                msg.content ||
+                "🎙️ ویس / 📍 موقعیت",
+
+            type:
+                msg.type ||
+                "text",
+
+            time:
+                new Date().toLocaleString(
+                    "fa-IR"
+                )
+
+        });
+
+    }
+
+    const { error: deleteError } =
+        await supabaseClient
+            .from("messages")
+            .delete()
+            .eq("id", id);
+
+    if(deleteError){
+
+        console.error(
+            "Supabase delete error:",
+            deleteError
+        );
+
+        alert(
+            "حذف پیام انجام نشد ❌\n" +
+            deleteError.message
+        );
+
+        return;
+
+    }
+
+    await loadMessages();
+
+}
+
+/* =====================================================
+PIN
+===================================================== */
+
+async function togglePin(id){
+
+    refreshCurrentUser();
+
+    const { data: msg, error: findError } =
+        await supabaseClient
+            .from("messages")
+            .select("id, is_pinned")
+            .eq("id", id)
+            .single();
+
+    if(findError){
+
+        console.error(
+            "Find message error:",
+            findError
+        );
+
+        alert(
+            "پیام پیدا نشد ❌"
+        );
+
+        return;
+    }
+
+    const newPinnedState =
+        !msg.is_pinned;
+
+    console.log(
+        "Changing pin:",
+        msg.is_pinned,
+        "→",
+        newPinnedState
+    );
+
+    const { data, error: updateError } =
+        await supabaseClient
+            .from("messages")
+            .update({
+                is_pinned:
+                    newPinnedState
+            })
+            .eq("id", id)
+            .select()
+            .single();
+
+    if(updateError){
+
+        console.error(
+            "Pin update error:",
+            updateError
+        );
+
+        alert(
+            "سنجاق انجام نشد ❌\n" +
+            updateError.message
+        );
+
+        return;
+    }
+
+    console.log(
+        "Pin updated:",
+        data
+    );
+
+    await loadMessages();
+
+}
+
+/* =====================================================
+TYPING
+===================================================== */
+
+function handleTyping(){
+
+    const status =
+        document.getElementById(
+            "typingStatus"
+        );
+
+
+    if(!currentUser)
+        return;
+
+
+    status.innerText =
+        "✍️ " +
+        currentUser.name +
+        " در حال نوشتن است...";
+
+
+    clearTimeout(
+        typingTimer
+    );
+
+
+    typingTimer =
+        setTimeout(
+            clearTyping,
+            1200
+        );
+
+}
+
+
+function clearTyping(){
+
+    const status =
+        document.getElementById(
+            "typingStatus"
+        );
+
+
+    if(status)
+        status.innerText = "";
+
+}
+
+
+/* =====================================================
+VOICE RECORDING
+===================================================== */
+
+async function toggleRecording(){
+
+    if(isRecording){
+
+        stopRecording();
+
+        return;
+
+    }
+
+
+    try{
+
+        const stream =
+            await navigator.mediaDevices.getUserMedia({
+                audio:true
+            });
+
+
+        mediaRecorder =
+            new MediaRecorder(
+                stream
+            );
+
+
+        audioChunks = [];
+
+
+        mediaRecorder.ondataavailable =
+            function(event){
+
+                if(event.data.size > 0){
+
+                    audioChunks.push(
+                        event.data
+                    );
+
+                }
+
+            };
+
+
+        mediaRecorder.onstop =
+            function(){
+
+                stream
+                    .getTracks()
+                    .forEach(
+                        track =>
+                            track.stop()
+                    );
+
+
+                createVoiceMessage();
+
+            };
+
+
+        mediaRecorder.start();
+
+
+        isRecording =
+            true;
+
+
+        const btn =
+            document.getElementById(
+                "voiceBtn"
+            );
+
+
+        btn.classList.add(
+            "recording"
+        );
+
+
+        btn.innerText =
+            "⏹️";
+
+
+        document.getElementById(
+            "typingStatus"
+        ).innerText =
+            "🎙️ " +
+            currentUser.name +
+            " در حال ضبط ویس است...";
+
+    }
+    catch(error){
+
+        alert(
+            "دسترسی به میکروفون داده نشد."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+STOP RECORDING
+===================================================== */
+
+function stopRecording(){
+
+    if(
+        mediaRecorder &&
+        mediaRecorder.state !== "inactive"
+    ){
+
+        mediaRecorder.stop();
+
+    }
+
+
+    isRecording =
+        false;
+
+
+    const btn =
+        document.getElementById(
+            "voiceBtn"
+        );
+
+
+    btn.classList.remove(
+        "recording"
+    );
+
+
+    btn.innerText =
+        "🎙️";
+
+
+    clearTyping();
+
+}
+
+
+/* =====================================================
+CREATE VOICE MESSAGE
+===================================================== */
+
+function createVoiceMessage(){
+
+    const blob =
+        new Blob(
+            audioChunks,
+            {
+                type:"audio/webm"
+            }
+        );
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onloadend =
+        function(){
+
+            const messages =
+                getChatMessages();
+
+
+            messages.push({
+
+                id:
+                    Date.now().toString(),
+
+                userId:
+                    currentUser.id,
+
+                userName:
+                    currentUser.name,
+
+                type:
+                    "voice",
+
+                audio:
+                    reader.result,
+
+                createdAt:
+                    new Date().toLocaleString(
+                        "fa-IR"
+                    ),
+
+                pinned:false,
+
+                edited:false,
+
+                replyTo:
+                    replyTo
+                    ? {
+
+                        id:
+                            replyTo.id,
+
+                        userName:
+                            replyTo.userName,
+
+                        text:
+                            replyTo.text ||
+                            "🎙️ ویس"
+
+                    }
+                    : null
+
+            });
+
+
+            saveChatMessages(
+                messages
+            );
+
+
+            cancelReply();
+
+
+            loadMessages();
+
+        };
+
+
+    reader.readAsDataURL(
+        blob
+    );
+
+}
+
+
+/* =====================================================
+LOCATION
+===================================================== */
+
+function shareLocation(){
+
+    if(
+        !navigator.geolocation
+    ){
+
+        alert(
+            "مرورگر شما موقعیت مکانی را پشتیبانی نمی‌کند."
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position){
+
+            const lat =
+                position.coords.latitude;
+
+
+            const lon =
+                position.coords.longitude;
+
+
+            const mapUrl =
+                "https://www.google.com/maps?q=" +
+                lat +
+                "," +
+                lon;
+
+
+            const messages =
+                getChatMessages();
+
+
+            messages.push({
+
+                id:
+                    Date.now().toString(),
+
+                userId:
+                    currentUser.id,
+
+                userName:
+                    currentUser.name,
+
+                type:
+                    "location",
+
+                latitude:
+                    lat,
+
+                longitude:
+                    lon,
+
+                mapUrl:
+                    mapUrl,
+
+                createdAt:
+                    new Date().toLocaleString(
+                        "fa-IR"
+                    ),
+
+                pinned:false,
+
+                edited:false
+
+            });
+
+
+            saveChatMessages(
+                messages
+            );
+
+
+            loadMessages();
+
+
+            alert(
+                "موقعیت مکانی ارسال شد 📍"
+            );
+
+        },
+
+        function(){
+
+            alert(
+                "اجازه دسترسی به موقعیت مکانی داده نشد."
+            );
+
+        },
+
+        {
+
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:0
+
+        }
+
+    );
+
+}
+
+
+/* =====================================================
+DELETED LOGS
+===================================================== */
+
+function getDeletedLogs(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "emojiRoomDeletedLogs"
+            )
+        ) || [];
+
+    }
+    catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+function saveDeletedLog(log){
+
+    const logs =
+        getDeletedLogs();
+
+
+    logs.push(
+        log
+    );
+
+
+    localStorage.setItem(
+        "emojiRoomDeletedLogs",
+        JSON.stringify(logs)
+    );
+
+}
+
+
+/* =====================================================
+EDITED LOGS
+===================================================== */
+
+function getEditedLogs(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "emojiRoomEditedLogs"
+            )
+        ) || [];
+
+    }
+    catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+function saveEditedLog(log){
+
+    const logs =
+        getEditedLogs();
+
+
+    logs.push(
+        log
+    );
+
+
+    localStorage.setItem(
+        "emojiRoomEditedLogs",
+        JSON.stringify(logs)
+    );
+
+}
+
+
+/* =====================================================
+ADMIN PANEL
+===================================================== */
+
+function loadAdminPanel(){
+
+    refreshCurrentUser();
+
+
+    if(
+        currentUser.role !== "king"
+    )
+        return;
+
+
+    const usersBox =
+        document.getElementById(
+            "adminUsers"
+        );
+
+
+    const users =
+        getUsers();
+
+
+    usersBox.innerHTML = "";
+
+
+    users.forEach(
+        function(user){
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "admin-user";
+
+
+            const isKing =
+                normalizeID(user.id) ===
+                KING_ID;
+
+
+            div.innerHTML = `
+
+                <div class="admin-user-top">
+
+                    <div>
+
+                        <b>
+                            ${escapeHTML(
+                                user.name
+                            )}
+                        </b>
+
+                        <div
+                            style="
+                                color:#888;
+                                font-size:12px;
+                                margin-top:4px;
+                            "
+                        >
+                            ${escapeHTML(
+                                user.id
+                            )}
+                        </div>
+
+                    </div>
+
+                    <div>
+                        ${getRankBadge(
+                            user.role
+                        )}
+                    </div>
+
+                </div>
+
+
+                <div class="admin-controls">
+
+                    ${
+                        !isKing
+                        ? `
+
+                            <button
+                                class="small-btn"
+                                onclick="changeRole('${user.id}')"
+                            >
+
+                                ${
+                                    user.role === "admin"
+                                    ? "👤 عادی کردن"
+                                    : "🛡️ ادمین کردن"
+                                }
+
+                            </button>
+
+                        `
+                        : ""
+                    }
+
+
+                    ${
+                        user.role === "admin"
+                        ? `
+
+                            <button
+                                class="small-btn"
+                                onclick="togglePermissions('${user.id}')"
+                            >
+                                ⚙️ دسترسی‌ها
+                            </button>
+
+                        `
+                        : ""
+                    }
+
+
+                    ${
+                        !isKing &&
+                        normalizeID(user.id) !==
+                        normalizeID(currentUser.id)
+                        ? `
+
+                            <button
+                                class="small-btn danger"
+                                onclick="deleteUser('${user.id}')"
+                            >
+                                🗑️ حذف کاربر
+                            </button>
+
+                        `
+                        : ""
+                    }
+
+                </div>
+
+
+                ${
+                    user.role === "admin"
+                    ? `
+
+                        <div
+                            id="permissions-${safeID(user.id)}"
+                            class="permission-box"
+                        >
+
+                            <label class="permission">
+
+                                <input
+                                    type="checkbox"
+                                    ${
+                                        user.permissions?.reply !== false
+                                        ? "checked"
+                                        : ""
+                                    }
+                                    onchange="
+                                        setPermission(
+                                            '${user.id}',
+                                            'reply',
+                                            this.checked
+                                        )
+                                    "
+                                >
+
+                                ↩️ ریپلای
+
+                            </label>
+
+
+                            <label class="permission">
+
+                                <input
+                                    type="checkbox"
+                                    ${
+                                        user.permissions?.edit
+                                        ? "checked"
+                                        : ""
+                                    }
+                                    onchange="
+                                        setPermission(
+                                            '${user.id}',
+                                            'edit',
+                                            this.checked
+                                        )
+                                    "
+                                >
+
+                                ✏️ ویرایش
+
+                            </label>
+
+
+                            <label class="permission">
+
+                                <input
+                                    type="checkbox"
+                                    ${
+                                        user.permissions?.delete
+                                        ? "checked"
+                                        : ""
+                                    }
+                                    onchange="
+                                        setPermission(
+                                            '${user.id}',
+                                            'delete',
+                                            this.checked
+                                        )
+                                    "
+                                >
+
+                                🗑️ حذف
+
+                            </label>
+
+
+                            <label class="permission">
+
+                                <input
+                                    type="checkbox"
+                                    ${
+                                        user.permissions?.pin
+                                        ? "checked"
+                                        : ""
+                                    }
+                                    onchange="
+                                        setPermission(
+                                            '${user.id}',
+                                            'pin',
+                                            this.checked
+                                        )
+                                    "
+                                >
+
+                                📌 سنجاق
+
+                            </label>
+
+                        </div>
+
+                    `
+                    : ""
+                }
+
+            `;
+
+
+            usersBox.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    loadAdminLogs();
+
+}
+
+
+/* =====================================================
+CHANGE ROLE
+===================================================== */
+
+function changeRole(id){
+
+    refreshCurrentUser();
+
+
+    if(
+        currentUser.role !== "king"
+    )
+        return;
+
+
+    const key =
+        "emojiRoomAccount_" +
+        normalizeID(id);
+
+
+    const saved =
+        localStorage.getItem(key);
+
+
+    if(!saved)
+        return;
+
+
+    const user =
+        JSON.parse(saved);
+
+
+    if(
+        normalizeID(user.id) ===
+        KING_ID
+    ){
+
+        alert(
+            "مقام King قابل تغییر نیست."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        user.role === "admin"
+    ){
+
+        user.role =
+            "normal";
+
+
+        user.permissions = {
+
+            reply:true,
+            edit:true,
+            delete:true,
+            pin:true,
+            manageUsers:false
+
+        };
+
+    }
+    else{
+
+        user.role =
+            "admin";
+
+
+        user.permissions = {
+
+            reply:true,
+            edit:false,
+            delete:false,
+            pin:false,
+            manageUsers:false
+
+        };
+
+    }
+
+
+    saveUser(
+        user
+    );
+
+
+    loadAdminPanel();
+
+    loadMembers();
+
+}
+
+
+/* =====================================================
+PERMISSIONS
+===================================================== */
+
+function togglePermissions(id){
+
+    const box =
+        document.getElementById(
+            "permissions-" +
+            safeID(id)
+        );
+
+
+    if(box){
+
+        box.classList.toggle(
+            "active"
+        );
+
+    }
+
+}
+
+
+function setPermission(
+    id,
+    permission,
+    value
+){
+
+    refreshCurrentUser();
+
+
+    if(
+        currentUser.role !== "king"
+    )
+        return;
+
+
+    const saved =
+        localStorage.getItem(
+            "emojiRoomAccount_" +
+            normalizeID(id)
+        );
+
+
+    if(!saved)
+        return;
+
+
+    const user =
+        JSON.parse(saved);
+
+
+    if(
+        user.role !== "admin"
+    )
+        return;
+
+
+    if(!user.permissions)
+        user.permissions = {};
+
+
+    user.permissions[
+        permission
+    ] =
+        value;
+
+
+    saveUser(
+        user
+    );
+
+}
+
+
+/* =====================================================
+DELETE USER
+===================================================== */
+
+function deleteUser(id){
+
+    refreshCurrentUser();
+
+
+    if(
+        currentUser.role !== "king"
+    )
+        return;
+
+
+    if(
+        normalizeID(id) ===
+        KING_ID
+    ){
+
+        alert(
+            "حساب King قابل حذف نیست."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "این کاربر حذف شود؟"
+        )
+    )
+        return;
+
+
+    localStorage.removeItem(
+        "emojiRoomAccount_" +
+        normalizeID(id)
+    );
+
+
+    loadAdminPanel();
+
+    loadMembers();
+
+}
+
+
+/* =====================================================
+ADMIN LOGS
+===================================================== */
+
+function loadAdminLogs(){
+
+    const deletedBox =
+        document.getElementById(
+            "deletedMessages"
+        );
+
+
+    const editedBox =
+        document.getElementById(
+            "editedMessages"
+        );
+
+
+    const deleted =
+        getDeletedLogs();
+
+
+    const edited =
+        getEditedLogs();
+
+
+    deletedBox.innerHTML = "";
+
+    editedBox.innerHTML = "";
+
+
+    if(
+        deleted.length === 0
+    ){
+
+        deletedBox.innerHTML =
+            `
+            <div class="log-item">
+                هنوز پیامی حذف نشده.
+            </div>
+            `;
+
+    }
+    else{
+
+        [...deleted]
+        .reverse()
+        .forEach(
+            function(log){
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "log-item";
+
+
+                div.innerHTML = `
+
+                    🗑️ <b>
+                        ${escapeHTML(
+                            log.userName
+                        )}
+                    </b>
+
+                    <br>
+
+                    ${escapeHTML(
+                        log.text
+                    )}
+
+                    <div class="log-time">
+                        ${log.time}
+                    </div>
+
+                `;
+
+
+                deletedBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    }
+
+
+    if(
+        edited.length === 0
+    ){
+
+        editedBox.innerHTML =
+            `
+            <div class="log-item">
+                هنوز پیامی ویرایش نشده.
+            </div>
+            `;
+
+    }
+    else{
+
+        [...edited]
+        .reverse()
+        .forEach(
+            function(log){
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "log-item";
+
+
+                div.innerHTML = `
+
+                    ✏️ <b>
+                        ${escapeHTML(
+                            log.userName
+                        )}
+                    </b>
+
+                    <br><br>
+
+                    قبل:
+                    ${escapeHTML(
+                        log.oldText
+                    )}
+
+                    <br>
+
+                    بعد:
+                    ${escapeHTML(
+                        log.newText
+                    )}
+
+                    <div class="log-time">
+                        ${log.time}
+                    </div>
+
+                `;
+
+
+                editedBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+TRUTH OR DARE
+===================================================== */
+
+const truthQuestions = [
+    "آخرین دروغی که گفتی چی بود؟",
+    "از بین اعضای اینجا با چه کسی بیشتر راحتی؟",
+    "بزرگ‌ترین سوتی‌ای که دادی چی بوده؟",
+    "اگر می‌توانستی یک خاطره را پاک کنی، کدام بود؟",
+    "آخرین چیزی که بابتش خیلی خندیدی چی بود؟",
+    "بزرگ‌ترین ترست چیه؟",
+    "اگر یک روز نامرئی می‌شدی، چه کار می‌کردی؟",
+    "چه چیزی هست که خیلی‌ها درباره تو نمی‌دانند؟",
+    "اگر مجبور باشی یک نفر را برای یک سفر انتخاب کنی، چه کسی را انتخاب می‌کنی؟",
+    "آخرین باری که از کسی ناراحت شدی کی بود؟"
+];
+
+const dareQuestions = [
+    "۱۰ ثانیه با صدای خنده‌دار حرف بزن.",
+    "یک پیام با سه ایموجی تصادفی در چت بفرست و توضیحش نده.",
+    "اسم خودت را برعکس بگو.",
+    "۲۰ ثانیه مثل یک مجری تلویزیون صحبت کن.",
+    "یک جمله خیلی رسمی برای درخواست آب بنویس.",
+    "در چت فقط با ایموجی به یک پیام جواب بده.",
+    "۵ بار پشت سر هم بگو: جرئت یا حقیقت!",
+    "یک تعریف واقعی از یکی از اعضای بازی بکن.",
+    "تا نوبت بعدی یک لقب بامزه برای خودت انتخاب کن.",
+    "یک جمله خنده‌دار بساز که هر سه کلمه‌اش با یک حرف شروع شوند."
+];
+
+let gamePlayer = null;
+let gameHistory = [];
+
+function getGamePlayers(){
+
+    const users = getUsers();
+
+    if(
+        currentUser &&
+        !users.some(
+            user =>
+                normalizeID(user.id) ===
+                normalizeID(currentUser.id)
+        )
+    ){
+        users.push(currentUser);
+    }
+
+    return users;
+
+}
+
+function loadGamePlayers(){
+
+    const select =
+        document.getElementById("gamePlayer");
+
+    if(!select)
+        return;
+
+    const users =
+        getGamePlayers();
+
+    select.innerHTML = "";
+
+    if(users.length === 0){
+
+        select.innerHTML =
+            `<option value="">هیچ بازیکنی پیدا نشد</option>`;
+
+        return;
+
+    }
+
+    users.forEach(
+        function(user){
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                user.id;
+
+            option.textContent =
+                user.name +
+                " — " +
+                getRoleText(user.role);
+
+            select.appendChild(option);
+
+        }
+    );
+
+    if(
+        gamePlayer &&
+        users.some(
+            user =>
+                normalizeID(user.id) ===
+                normalizeID(gamePlayer)
+        )
+    ){
+
+        select.value =
+            gamePlayer;
+
+    }
+    else{
+
+        gamePlayer =
+            users[0].id;
+
+        select.value =
+            gamePlayer;
+
+    }
+
+    updateGameTurn();
+
+}
+
+function getRoleText(role){
+
+    if(role === "king")
+        return "King";
+
+    if(role === "admin")
+        return "ادمین";
+
+    return "عادی";
+
+}
+
+function setGamePlayer(){
+
+    const select =
+        document.getElementById("gamePlayer");
+
+    if(!select)
+        return;
+
+    gamePlayer =
+        select.value;
+
+    updateGameTurn();
+
+}
+
+function updateGameTurn(){
+
+    const turn =
+        document.getElementById("gameTurn");
+
+    if(!turn)
+        return;
+
+    const user =
+        getGamePlayers().find(
+            item =>
+                normalizeID(item.id) ===
+                normalizeID(gamePlayer)
+        );
+
+    if(user){
+
+        turn.innerText =
+            "🎯 نوبت: " +
+            user.name;
+
+    }
+    else{
+
+        turn.innerText =
+            "نوبت بازیکن را انتخاب کن";
+
+    }
+
+}
+
+function randomItem(list){
+
+    return list[
+        Math.floor(
+            Math.random() * list.length
+        )
+    ];
+
+}
+
+function showGameQuestion(type){
+
+    if(!gamePlayer){
+
+        alert(
+            "اول یک بازیکن انتخاب کن."
+        );
+
+        return;
+
+    }
+
+    const players =
+        getGamePlayers();
+
+    const player =
+        players.find(
+            user =>
+                normalizeID(user.id) ===
+                normalizeID(gamePlayer)
+        );
+
+    if(!player)
+        return;
+
+    const question =
+        type === "truth"
+        ? randomItem(truthQuestions)
+        : randomItem(dareQuestions);
+
+    const label =
+        type === "truth"
+        ? "🧠 حقیقت"
+        : "🔥 جرئت";
+
+    const box =
+        document.getElementById(
+            "gameQuestion"
+        );
+
+    box.innerHTML =
+        "<b>" +
+        escapeHTML(player.name) +
+        "</b><br><br>" +
+        label +
+        ":<br>" +
+        escapeHTML(question);
+
+    gameHistory.unshift({
+
+        player:
+            player.name,
+
+        type:
+            label,
+
+        question:
+            question,
+
+        time:
+            new Date().toLocaleTimeString(
+                "fa-IR",
+                {
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            )
+
+    });
+
+    if(gameHistory.length > 12)
+        gameHistory.pop();
+
+    saveGameHistory();
+
+    loadGameHistory();
+
+    const hint =
+        document.getElementById(
+            "gameHint"
+        );
+
+    hint.innerText =
+        "بعد از انجامش، «نوبت بعدی» را بزن.";
+
+}
+
+function playTruth(){
+
+    showGameQuestion("truth");
+
+}
+
+function playDare(){
+
+    showGameQuestion("dare");
+
+}
+
+function nextGameTurn(){
+
+    const users =
+        getGamePlayers();
+
+    if(users.length === 0)
+        return;
+
+    let index =
+        users.findIndex(
+            user =>
+                normalizeID(user.id) ===
+                normalizeID(gamePlayer)
+        );
+
+    if(index === -1)
+        index = 0;
+
+    index =
+        (index + 1) %
+        users.length;
+
+    gamePlayer =
+        users[index].id;
+
+    const select =
+        document.getElementById(
+            "gamePlayer"
+        );
+
+    if(select)
+        select.value =
+            gamePlayer;
+
+    updateGameTurn();
+
+    document.getElementById(
+        "gameQuestion"
+    ).innerText =
+        "🎲 حالا نوبت " +
+        users[index].name +
+        " است. حقیقت یا جرئت؟";
+
+}
+
+function saveGameHistory(){
+
+    localStorage.setItem(
+        "emojiRoomGameHistory",
+        JSON.stringify(gameHistory)
+    );
+
+}
+
+function loadGameHistory(){
+
+    const box =
+        document.getElementById(
+            "gameHistory"
+        );
+
+    if(!box)
+        return;
+
+    box.innerHTML = "";
+
+    if(gameHistory.length === 0){
+
+        box.innerHTML =
+            `<div class="game-history-item">
+                هنوز بازی شروع نشده.
+            </div>`;
+
+        return;
+
+    }
+
+    gameHistory.forEach(
+        function(item){
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "game-history-item";
+
+            div.innerHTML =
+                "🎯 <b>" +
+                escapeHTML(item.player) +
+                "</b> — " +
+                escapeHTML(item.type) +
+                "<br>" +
+                escapeHTML(item.question) +
+                "<br>" +
+                "<small>" +
+                escapeHTML(item.time) +
+                "</small>";
+
+            box.appendChild(div);
+
+        }
+    );
+
+}
+
+function resetGame(){
+
+    if(
+        !confirm(
+            "تاریخچه بازی پاک شود و بازی از اول شروع شود؟"
+        )
+    )
+        return;
+
+    gameHistory = [];
+
+    saveGameHistory();
+
+    loadGameHistory();
+
+    document.getElementById(
+        "gameQuestion"
+    ).innerText =
+        "🎲 بازی دوباره شروع شد! حقیقت یا جرئت؟";
+
+    document.getElementById(
+        "gameHint"
+    ).innerText =
+        "اول بازیکن را انتخاب کن، بعد «حقیقت» یا «جرئت» را بزن.";
+
+}
+
+function loadSavedGame(){
+
+    try{
+
+        gameHistory =
+            JSON.parse(
+                localStorage.getItem(
+                    "emojiRoomGameHistory"
+                )
+            ) || [];
+
+    }
+    catch(error){
+
+        gameHistory = [];
+
+    }
+
+    loadGamePlayers();
+
+    loadGameHistory();
+
+}
+
+/* =====================================================
+SAFE ID
+===================================================== */
+
+function safeID(id){
+
+    return normalizeID(id)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
+
+}
+
+
+/* =====================================================
+ESCAPE HTML
+===================================================== */
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        text == null
+        ? ""
+        : String(text);
+
+
+    return div.innerHTML;
+
+}
+
+function cancelReply(){
+
+    replyTo = null;
+
+    const replyBox =
+        document.getElementById("replyBox");
+
+    if(replyBox){
+        replyBox.classList.remove("active");
+    }
+
+}
+
+</script>
+
+</body>
+</html>
